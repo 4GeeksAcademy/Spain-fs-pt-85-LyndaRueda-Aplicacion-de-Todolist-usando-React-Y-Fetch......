@@ -13,7 +13,7 @@ body {
   text-align: center;
   background: white;
   padding: 20px;
-  border-radius: 80px;
+  border-radius: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 800px;
@@ -36,7 +36,8 @@ input {
 ul {
   list-style-type: none;
   padding: 0;
-  background-color: burlywood;
+  background-color: white;
+  margin: 0;
 }
 
 .task-item {
@@ -46,16 +47,35 @@ ul {
   padding: 10px;
   margin: 5px 0;
   background-color: #f9f9f9;
+  border: 1px solid #ddd;
   border-radius: 5px;
+  color: #333;
+}
+
+.task-item:hover .delete-button {
+  display: inline-block;
 }
 
 .delete-button {
   display: none;
   background: none;
   border: none;
+  color: red;
+  font-size: 14px;
   cursor: pointer;
 }
 
-.task-item:hover .delete-button {
-  display: inline-block;
+.clear-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #ff6f61;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.clear-button:hover {
+  background-color: #e05650;
 }
