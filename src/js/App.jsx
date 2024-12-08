@@ -129,7 +129,7 @@ function App() {
       />
       <ToDoList tasks={tasks} onDelete={deleteTask} onUpdate={updateTask} />
       <button className="clear-button" onClick={() => setTasks([])}>
-        Limpiar todas las tareas 🧹
+        Limpiar todas las tareas 🧹🐉🔥
       </button>
     </div>
   );
