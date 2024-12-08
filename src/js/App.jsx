@@ -3,14 +3,13 @@ import "../styles/index.css";
 import ToDoList from "./components/ToDoList";
 
 const BASE_URL = "https://playground.4geeks.com/todo";
-const USER_URL = `${BASE_URL}/users/DragonBall`;  // URL para obtener y crear el usuario
-const TODOS_URL = `${BASE_URL}/todos/DragonBall`;  // URL para las tareas del usuario
+const USER_URL = `${BASE_URL}/users/DragonBall`;
+const TODOS_URL = `${BASE_URL}/todos/DragonBall`;
 
 function App() {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState("");
 
-  // Inicializar usuario
   const initializeUser = async () => {
     try {
       const response = await fetch(USER_URL, {
@@ -30,18 +29,17 @@ function App() {
     }
   };
 
-  // Obtener tareas
+
   const fetchTasks = async () => {
     try {
       const response = await fetch(USER_URL);
       const data = await response.json();
-      setTasks(data.todos || []);  // Ajustado para acceder correctamente a la lista de tareas
+      setTasks(data.todos || []);
     } catch (error) {
       console.error("Error al obtener las tareas:", error);
     }
   };
 
-  // Añadir tarea
   const addTask = async () => {
     if (newTask.trim() === "") return;
 
@@ -70,7 +68,6 @@ function App() {
     }
   };
 
-  // Actualizar tarea
   const updateTask = async (id, updatedTask) => {
     const updatedTasks = tasks.map((task) =>
       task.id === id ? updatedTask : task
@@ -95,7 +92,6 @@ function App() {
     }
   };
 
-  // Eliminar tarea
   const deleteTask = async (id) => {
     try {
       const response = await fetch(`${BASE_URL}/todos/${id}`, {
@@ -121,7 +117,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Mi Lista de Tareas 📝</h1>
+      <h1>Mi Lista de Tareas 📝🟠🐉🉐✪</h1>
       <input
         type="text"
         placeholder="Añadir tarea..."
