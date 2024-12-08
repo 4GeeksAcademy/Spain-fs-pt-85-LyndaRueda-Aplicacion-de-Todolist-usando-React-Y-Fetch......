@@ -1,32 +1,57 @@
 import React, { useState, useEffect } from "react";
 import "../styles/index.css";
+import ToDoList from "./components/ToDoList";
 
-const API_URL = "https://jsonplaceholder.typicode.com/todos";
+const BASE_URL = "https://playground.4geeks.com/todo";
+const USER_URL = `${BASE_URL}/users/DragonBall`;  // URL para obtener y crear el usuario
+const TODOS_URL = `${BASE_URL}/todos/DragonBall`;  // URL para las tareas del usuario
 
 function App() {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState("");
 
+  // Inicializar usuario
+  const initializeUser = async () => {
+    try {
+      const response = await fetch(USER_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        console.log("Usuario inicializado exitosamente.");
+      } else {
+        console.error("Error al inicializar el usuario.");
+      }
+    } catch (error) {
+      console.error("Error al inicializar el usuario:", error);
+    }
+  };
+
+  // Obtener tareas
   const fetchTasks = async () => {
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(USER_URL);
       const data = await response.json();
-      setTasks(data);
+      setTasks(data.todos || []);  // Ajustado para acceder correctamente a la lista de tareas
     } catch (error) {
       console.error("Error al obtener las tareas:", error);
     }
   };
 
+  // Añadir tarea
   const addTask = async () => {
     if (newTask.trim() === "") return;
 
     const newTaskData = {
-      title: newTask,
-      completed: false,
+      label: newTask,
+      is_done: false,
     };
 
     try {
-      const response = await fetch(API_URL, {
+      const response = await fetch(TODOS_URL, {
         method: "POST",
         body: JSON.stringify(newTaskData),
         headers: {
@@ -34,28 +59,64 @@ function App() {
         },
       });
 
-      const data = await response.json();
-      setTasks((prevTasks) => [...prevTasks, data]);
-      setNewTask("");
+      if (response.ok) {
+        setTasks((prevTasks) => [...prevTasks, newTaskData]);
+        setNewTask("");
+      } else {
+        console.error("Error al agregar la tarea.");
+      }
     } catch (error) {
       console.error("Error al agregar la tarea:", error);
     }
   };
 
-  const deleteTask = async (id) => {
+  // Actualizar tarea
+  const updateTask = async (id, updatedTask) => {
+    const updatedTasks = tasks.map((task) =>
+      task.id === id ? updatedTask : task
+    );
+
     try {
-      await fetch(`${API_URL}/${id}`, {
-        method: "DELETE",
+      const response = await fetch(`${BASE_URL}/todos/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(updatedTask),
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
 
-      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+      if (response.ok) {
+        setTasks(updatedTasks);
+      } else {
+        console.error("Error al actualizar la tarea.");
+      }
+    } catch (error) {
+      console.error("Error al actualizar la tarea:", error);
+    }
+  };
+
+  // Eliminar tarea
+  const deleteTask = async (id) => {
+    try {
+      const response = await fetch(`${BASE_URL}/todos/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+      } else {
+        console.error("Error al eliminar la tarea.");
+      }
     } catch (error) {
       console.error("Error al eliminar la tarea:", error);
     }
   };
 
   useEffect(() => {
-    fetchTasks();
+    initializeUser().then(fetchTasks);
   }, []);
 
   return (
@@ -70,23 +131,7 @@ function App() {
           if (e.key === "Enter") addTask();
         }}
       />
-      <ul>
-        {tasks.length === 0 ? (
-          <li className="empty-list">No hay tareas aún...❌</li>
-        ) : (
-          tasks.map((task) => (
-            <li key={task.id} className="task-item">
-              <span>{task.title}</span>
-              <button
-                className="delete-button"
-                onClick={() => deleteTask(task.id)}
-              >
-                🗑️
-              </button>
-            </li>
-          ))
-        )}
-      </ul>
+      <ToDoList tasks={tasks} onDelete={deleteTask} onUpdate={updateTask} />
       <button className="clear-button" onClick={() => setTasks([])}>
         Limpiar todas las tareas 🧹
       </button>
